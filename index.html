@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Central Park 615 — Задачи</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600&display=swap');
+:root{--cream:#F7F4EF;--dark:#1A1814;--bronze:#8B6914;--bl:#C49A2A;--bp:#F0E8D0;--mid:#5A544A;--bdr:#E2D9C8;--tbg:#EDE5D5;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--cream);color:var(--dark);font-family:'Inter',sans-serif;font-size:14px;line-height:1.6;}
+.hdr{background:var(--dark);color:var(--cream);padding:44px 56px 36px;position:relative;overflow:hidden;}
+.hdr::after{content:'';position:absolute;top:0;right:0;width:300px;height:100%;background:linear-gradient(135deg,transparent 40%,rgba(139,105,20,.2) 100%);}
+.eyebrow{font-size:10px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--bl);margin-bottom:10px;}
+.hdr h1{font-family:'Playfair Display',serif;font-size:40px;font-weight:400;line-height:1.1;}
+.hdr h1 span{color:var(--bl);}
+.meta{display:flex;gap:28px;margin-top:22px;flex-wrap:wrap;}
+.mi{display:flex;flex-direction:column;gap:2px;}
+.ml{font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:#9E9488;}
+.mv{font-size:12px;font-weight:500;color:#E8E0D0;}
+.tabs{background:#fff;border-bottom:2px solid var(--bdr);display:flex;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.06);overflow-x:auto;}
+.tab{padding:14px 20px;font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;cursor:pointer;color:var(--mid);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s;white-space:nowrap;}
+.tab:hover{color:var(--dark);background:#FAF7F2;}
+.tab.active{color:var(--bronze);border-bottom-color:var(--bronze);}
+.sec{display:none;max-width:1200px;margin:0 auto;padding:36px 40px 80px;}
+.sec.active{display:block;}
+.sec-title{font-family:'Playfair Display',serif;font-size:24px;font-weight:400;margin-bottom:24px;display:flex;align-items:center;gap:12px;}
+.dot{width:10px;height:10px;background:var(--bl);border-radius:50%;flex-shrink:0;}
+.tgrid{display:flex;flex-direction:column;gap:16px;}
+.card{background:#fff;border:1px solid var(--bdr);border-radius:12px;overflow:hidden;}
+.card-hdr{display:flex;align-items:center;gap:12px;padding:13px 18px;background:var(--tbg);border-bottom:1px solid var(--bdr);cursor:pointer;user-select:none;}
+.card-hdr:hover{background:#E5DCC8;}
+.num{font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--bronze);background:var(--bp);border:1px solid var(--bl);border-radius:4px;padding:2px 7px;flex-shrink:0;}
+.ctitle{font-weight:600;font-size:13px;flex:1;}
+.arr{font-size:10px;color:var(--mid);transition:transform .2s;}
+.card.open .arr{transform:rotate(90deg);}
+.card-body{display:none;padding:16px 18px;}
+.card.open .card-body{display:block;}
+.imgs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;}
+.imgs img{width:100px;height:80px;object-fit:cover;border-radius:6px;border:1px solid var(--bdr);cursor:zoom-in;transition:transform .15s;}
+.imgs img:hover{transform:scale(1.05);}
+.chklist{display:flex;flex-direction:column;gap:8px;}
+.ci{display:flex;align-items:flex-start;gap:10px;}
+.cb{width:17px;height:17px;border:1.5px solid var(--bl);border-radius:4px;flex-shrink:0;margin-top:2px;cursor:pointer;position:relative;background:#fff;transition:all .15s;}
+.cb.done{background:var(--bronze);border-color:var(--bronze);}
+.cb.done::after{content:'✓';position:absolute;top:50%;left:50%;transform:translate(-50%,-51%);font-size:10px;color:#fff;font-weight:700;}
+.ct{font-size:13px;color:var(--dark);line-height:1.5;flex:1;}
+.ct.done{text-decoration:line-through;color:#B0A898;}
+.cn{font-size:11px;color:var(--mid);margin-top:3px;font-style:italic;}
+.tag{font-size:10px;font-weight:700;letter-spacing:.05em;padding:2px 7px;border-radius:3px;flex-shrink:0;margin-top:3px;}
+.ta{background:#E8F0FD;color:#2D5FB0;}
+.ts{background:#FDF2E8;color:#B06020;}
+.tn{background:#EBF5EB;color:#2A7A2A;}
+.tt{background:#F3EBF8;color:#7A2A9A;}
+.lb{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);z-index:9999;align-items:center;justify-content:center;}
+.lb.open{display:flex;}
+.lb img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:6px;}
+.lb-x{position:absolute;top:20px;right:28px;color:#fff;font-size:36px;cursor:pointer;}
+.gallery{columns:3;gap:12px;}
+.gi{break-inside:avoid;margin-bottom:12px;}
+.gi img{width:100%;border-radius:8px;border:1px solid var(--bdr);display:block;cursor:zoom-in;}
+.gc{font-size:11px;color:var(--mid);padding:4px 2px 0;line-height:1.35;}
+@media(max-width:700px){.gallery{columns:2;}.sec{padding:24px 16px 60px;}.hdr{padding:28px 20px 24px;}.hdr h1{font-size:26px;}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="eyebrow">Итоги встречи с клиентом</div>
+  <h1>Central Park <span>615</span></h1>
+  <div class="meta">
+    <div class="mi"><span class="ml">Дата встречи</span><span class="mv">25 июня 2026 — фабрика 15:30</span></div>
+    <div class="mi"><span class="ml">Клиент</span><span class="mv">Розалия</span></div>
+    <div class="mi"><span class="ml">Объект</span><span class="mv">Central Park, корп. 1, кв. 615, эт. 6</span></div>
+    <div class="mi"><span class="ml">Прораб</span><span class="mv">Стас — Rem House — 0558351991</span></div>
+  </div>
+</div>
+<div class="tabs">
+  <div class="tab active" onclick="showTab('a',this)">🔵 Аббас</div>
+  <div class="tab" onclick="showTab('s',this)">🟠 Serj</div>
+  <div class="tab" onclick="showTab('n',this)">🟢 Наталья</div>
+  <div class="tab" onclick="showTab('t',this)">🟣 Технологи</div>
+  <div class="tab" onclick="showTab('g',this)">📸 Все фото</div>
+</div>
+<div class="sec active" id="sec-a">
+<div class="sec-title"><span class="dot"></span>Задачи Аббаса — снабжение и образцы</div>
+<div class="tgrid">
+<div class="card open">
+<div class="card-hdr" onclick="tog(this)"><span class="num">01</span><span class="ctitle">Образцы акрила</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_50@25-06-2026_07-59-56_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Белый матовый с одной стороны / глянцевый с другой</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Белый матовый, как в Court Tower (если первого нет)</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">02</span><span class="ctitle">Ручки для кухни — профиль и финиш</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_51@25-06-2026_08-03-01_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_52@25-06-2026_08-03-02_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_53@25-06-2026_08-03-02_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_54@25-06-2026_08-04-32_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_55@25-06-2026_08-04-33_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Найти ручки как на фото — фасад 22 мм, под тонкий алюминиевый профиль</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Финиш — тот же металлический цвет (образцы на фото 54-55)</div><div class="cn">Уточнить: делаем сами или отдаём на покраску?</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">03</span><span class="ctitle">Профиль для полок кухни + стекло 4 мм</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_56@25-06-2026_08-10-13_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_57@25-06-2026_08-10-14_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_58@25-06-2026_08-10-54_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Найти полочный профиль под стекло — как на фото</div><div class="cn">Покраска/анодирование под металлический финиш</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Бронзовое тонированное стекло 4 мм — наличие и цена</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">05</span><span class="ctitle">Рамочный профиль дверей кухни (тонкий алюминий)</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_59@25-06-2026_08-13-23_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Тонкий алюминиевый профиль под 4 мм стекло — тоньше стандартного</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Совместимость с Blum или скрытыми петлями — проверить</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Покраска/анодирование под металлический финиш</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">06</span><span class="ctitle">Blum TIP-ON — нижний откидной фасад</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_60@25-06-2026_08-20-14_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Система Blum TIP-ON push-to-open для нижнего МДФ-фасада</div><div class="cn">Без ручек + ограничитель угла открывания</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">07</span><span class="ctitle">Egger Diamond Grey — плита и кромка</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_61@25-06-2026_08-22-49_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_84@25-06-2026_10-08-16_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Egger Diamond Grey — наличие плиты и кромки, количество</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Зарезервировать 10 листов для проекта</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">08</span><span class="ctitle">Рифлёное бронзовое стекло (fluted)</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_62@25-06-2026_08-24-35_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Уточнить у Мередки наличие рифлёного бронзового стекла</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">10</span><span class="ctitle">Металлический финиш — источник и наличие</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_63@25-06-2026_08-31-53_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_64@25-06-2026_08-31-53_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_9@17-06-2026_15-29-25_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_10@17-06-2026_15-29-38_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Этот финиш — ПО ВСЕМУ ПРОЕКТУ. Найти поставщика, проверить наличие</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">11</span><span class="ctitle">Цвет металла детской комнаты</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_65@25-06-2026_08-33-27_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_66@25-06-2026_08-33-27_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_14@17-06-2026_15-43-56_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_15@17-06-2026_15-44-25_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Все металлические элементы детской — покрасить/анодировать в этот цвет</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Изготовить образец (сэмпл) покрытия для согласования</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">13</span><span class="ctitle">Шпон — образец для всего проекта</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_69@25-06-2026_08-36-28_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_70@25-06-2026_08-36-28_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Найти вторую половину разрезанного образца шпона на фабрике</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Если не найдут — сделать новый образец для сравнения</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">14</span><span class="ctitle">Колонна — шпон без швов, высота 3200 мм</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_71@25-06-2026_08-38-54_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_72@25-06-2026_08-41-41_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_22@17-06-2026_16-06-22_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Видимая зона ~3000 мм (цоколь 100 + багет 100). Клиент хочет БЕЗ ШВОВ</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Уточнить максимальную длину шпона — возможна ли бесшовная оклейка?</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">15</span><span class="ctitle">Legrabox серый — стекло и рейлинги</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_73@25-06-2026_08-46-25_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_74@25-06-2026_08-46-53_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_82@25-06-2026_10-05-30_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_83@25-06-2026_10-05-51_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Серый Legrabox со стеклянными боковинами — длинные ящики кухни</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Серый Legrabox с рейлингами — узкие ящики кухни</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Наличие, размеры, сроки поставки</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">16</span><span class="ctitle">Профили 45° по всему проекту</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Найти алюминиевые профили 45° (как на образце)</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Покраска/анодирование под металлический финиш — проверить</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">17</span><span class="ctitle">Pocket Door кухня — 2900 мм</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_75@25-06-2026_08-56-39_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_17@17-06-2026_15-49-45_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_27@23-06-2026_08-35-17_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Система Pocket Door: 2900×2900 мм, цоколь 100 мм</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Одна дверь чуть шире другой — нет щели при закрытии. Какая система это реализует?</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">18</span><span class="ctitle">Ткань для кровати — цвет утверждён</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_76@25-06-2026_08-58-45_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_77@25-06-2026_08-58-45_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_86@25-06-2026_10-11-09_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Материал кровати (цвет на фото) — наличие, цена, сроки</div><div class="cn">Образцы сейчас у заказчика</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Сделать пометку: этот материал в проекте</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">19</span><span class="ctitle">Ткани для всего проекта — подбор образцов</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Подобрать все ткани: кровати, диваны, мягкие изделия</div><div class="cn">Клиент хочет качественные варианты</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Подготовить актуальные образцы тканей</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">21</span><span class="ctitle">Подъёмные механизмы для кроватей</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Изучить файлы проекта, подобрать подъёмные механизмы для каждой кровати</div><div class="cn">Высота матрасов 300 мм. Учесть конструкцию, размеры, нагрузку</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">22</span><span class="ctitle">Ручка + тонкий профиль кухни</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_78@25-06-2026_09-13-14_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Найти ручку как на фото — под тонкий алюминиевый профиль</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Тонкий профиль: тоньше стандартного, под 4 мм бронзовое стекло</div></div><span class="tag ta">Аббас</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Покраска/анодирование под металлический финиш</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">23</span><span class="ctitle">Рейлинг над металлическими полками</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_79@25-06-2026_09-18-06_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_80@25-06-2026_10-01-21_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_81@25-06-2026_10-01-21_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Продумать крепление рейлинга над металлическими полками</div><div class="cn">Тот же финиш. Сзади рейлинга — тонкая полочка, закрывающая стык с лайтбоксом</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">—</span><span class="ctitle">Выдвижные сейфы для ящиков</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Найти поставщиков pull-out drawer safe</div><div class="cn">Нужны в ближайшее время</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">09</span><span class="ctitle">Постельное бельё</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Размеры, цвета, варианты — клиент хочет купить у нас</div></div><span class="tag ta">Аббас</span></div>
+</div>
+</div>
+</div>
+</div></div>
+<div class="sec" id="sec-s">
+<div class="sec-title"><span class="dot" style="background:#C49A2A"></span>Задачи Serj — координация</div>
+<div class="tgrid">
+<div class="card open">
+<div class="card-hdr" onclick="tog(this)"><span class="num">01</span><span class="ctitle">LED-лента, фильтры, прораб</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Принести образец LED-ленты прорабу (Стас — 0558351991). Согласовать 3000 K</div></div><span class="tag ts">Serj</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Уточнить место под фильтры — они переносятся</div></div><span class="tag ts">Serj</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">02</span><span class="ctitle">Детская — толщина стены и лестница</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_3@14-05-2026_11-51-57_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_29@23-06-2026_08-50-49_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Сообщить строителям толщину стенки скалолазания</div></div><span class="tag ts">Serj</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Согласовать крепление лестницы с прорабом (всё на бетонное перекрытие)</div></div><span class="tag ts">Serj</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">03</span><span class="ctitle">Двери — продать, получить техничку</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Продать заказчику двери (мы делаем только карты)</div></div><span class="tag ts">Serj</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Получить техничку по дверным рамам у Игоря</div></div><span class="tag ts">Serj</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Получить информацию по Pocket Door у Игоря</div></div><span class="tag ts">Serj</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Карты дверей подобрать под NCS-цвет стен</div></div><span class="tag ts">Serj</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">04</span><span class="ctitle">Гардероб и зона входа — доработка с клиентом</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_4@14-05-2026_11-57-31_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_25@17-06-2026_16-11-44_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Гардероб 2600×2600 — доработать дизайн с Розалией. Двери исключить из просчёта</div></div><span class="tag ts">Serj</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Зона возле входа — доработать с клиентом</div></div><span class="tag ts">Serj</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Дождаться обновлённых рендеров Living Room</div></div><span class="tag ts">Serj</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">05</span><span class="ctitle">Колонна — решение от заказчика</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_5@14-05-2026_12-06-22_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Дождаться решения заказчика по колонне (пока не определились)</div></div><span class="tag ts">Serj</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">06</span><span class="ctitle">Зеркало в гардероб</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_49@23-06-2026_15-22-13_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Клиент хочет зеркало как на фото — уточнить и согласовать</div></div><span class="tag ts">Serj</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">07</span><span class="ctitle">Плитка в раскладке</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_26@17-06-2026_23-00-36_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">❗ В раскладке написано «Марбл», но это плитка с Dragon — 9 мм. Исправить!</div></div><span class="tag ts">Serj</span></div>
+</div>
+</div>
+</div>
+</div></div>
+<div class="sec" id="sec-n">
+<div class="sec-title"><span class="dot" style="background:#2A7A2A"></span>Задачи Натальи — чертежи и документация</div>
+<div class="tgrid">
+<div class="card open">
+<div class="card-hdr" onclick="tog(this)"><span class="num">01</span><span class="ctitle">Документация</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Отправить таблицу материалов по проекту</div></div><span class="tag tn">Наталья</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Выложить подписанные чертежи в группу (пока не подписаны)</div></div><span class="tag tn">Наталья</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Разделить пакет чертежей: гардероб отдельно + остальные</div><div class="cn">Технические чертежи — только после финальных замеров</div></div><span class="tag tn">Наталья</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Всё выбранное на встрече добавить в таблицу</div></div><span class="tag tn">Наталья</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">02</span><span class="ctitle">Гардеробная — новый дизайн</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_42@23-06-2026_09-17-26_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_43@23-06-2026_09-17-27_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_44@23-06-2026_09-19-36_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_45@23-06-2026_09-19-36_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_47@23-06-2026_09-26-13_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_48@23-06-2026_09-29-42_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Разработать более интересный дизайн гардероба (конфигурация 2600×2600 без изменений)</div></div><span class="tag tn">Наталья</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Обувные механизмы — рассмотреть вращающийся вариант (ширина 800 мм)</div></div><span class="tag tn">Наталья</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Крепления — предложить решение и согласовать с Розалией (текущее ей не нравится)</div></div><span class="tag tn">Наталья</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Уточнить где используется ранее выбранный цвет (пункт -12-)</div></div><span class="tag tn">Наталья</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">03</span><span class="ctitle">Постирочная, детская, санузлы</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_7@17-06-2026_15-19-22_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Постирочная — финальная конфигурация и размеры коммуникационного блока</div></div><span class="tag tn">Наталья</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Детская — уточнить глубину стены с мягкой панелью (фото)</div></div><span class="tag tn">Наталья</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Санузлы — согласовать с клиентом (не согласованы)</div></div><span class="tag tn">Наталья</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">04</span><span class="ctitle">Двери и стеновые панели</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_11@17-06-2026_15-42-38_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_24@17-06-2026_16-11-15_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Уточнить стыковку панелей с дверными рамами</div></div><span class="tag tn">Наталья</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Согласовать узлы примыкания с Евгенией (дверники)</div></div><span class="tag tn">Наталья</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Продублировать план с развёртками</div></div><span class="tag tn">Наталья</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">05</span><span class="ctitle">Кухня — рейлинг и откидной фасад</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Уточнить — было ли уже решение по рейлингу над полками?</div></div><span class="tag tn">Наталья</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Проработать решение нижнего откидного МДФ-фасада с TIP-ON</div><div class="cn">Игорь: нужна металлическая основа. С технологами ещё не обсуждали.</div></div><span class="tag tn">Наталья</span></div>
+</div>
+</div>
+</div>
+</div></div>
+<div class="sec" id="sec-t">
+<div class="sec-title"><span class="dot" style="background:#7A2A9A"></span>Задачи технологов</div>
+<div class="tgrid">
+<div class="card open">
+<div class="card-hdr" onclick="tog(this)"><span class="num">01</span><span class="ctitle">Детская — крепление лестницы и турников</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_14@17-06-2026_15-43-56_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_15@17-06-2026_15-44-25_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_29@23-06-2026_08-50-49_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_30@23-06-2026_08-52-27_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_31@23-06-2026_08-52-49_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_32@23-06-2026_08-53-21_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Разработать скрытую систему крепления к несущему перекрытию</div><div class="cn">❗ Потолок Кнауф — нагрузку НЕ воспринимает. Всё на бетон.</div></div><span class="tag tt">Технологи</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Прорисовать конструкцию гнутой лестницы (дуги на металлические трубы, не к стене)</div></div><span class="tag tt">Технологи</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Обсудить решение в техническом чате с прорабом</div></div><span class="tag tt">Технологи</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">02</span><span class="ctitle">Колонна — шпон без швов, производство</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_71@25-06-2026_08-38-54_thumb.jpg" onclick="lb(this)" alt=""><img src="cp615_files/photo_22@17-06-2026_16-06-22_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Конструкция: 2 полукруглых половинки + шкантовая присадка в цеху + склейка на объекте</div><div class="cn">Шпонировать уже облицованные половинки. «Печеньки» на стыке.</div></div><span class="tag tt">Технологи</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Высота 3200 мм, видимая зона ~3000 мм (цоколь 100 + багет 100)</div></div><span class="tag tt">Технологи</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">03</span><span class="ctitle">Гнутые элементы — шпон, радиусные панели</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Радиусные панели как основа → шпонирование → соединение на шкантах/печеньках</div><div class="cn">Тонкий МДФ или гибкая фанера Сейба как основа</div></div><span class="tag tt">Технологи</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Столик из гнутого стекла/оргстекла (детская) — найти поставщика, образцы</div></div><span class="tag tt">Технологи</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">04</span><span class="ctitle">Металлические закладные</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_8@17-06-2026_15-29-05_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Предусмотреть металлические закладные (как на фото) без касания потолка</div></div><span class="tag tt">Технологи</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Очерёдность монтажа декоративных элементов — проработать</div></div><span class="tag tt">Технологи</span></div>
+</div>
+</div>
+</div>
+<div class="card">
+<div class="card-hdr" onclick="tog(this)"><span class="num">05</span><span class="ctitle">Откидной МДФ-фасад с TIP-ON</span><span class="arr">▶</span></div>
+<div class="card-body">
+<div class="imgs"><img src="cp615_files/photo_60@25-06-2026_08-20-14_thumb.jpg" onclick="lb(this)" alt=""></div>
+<div class="chklist">
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">Разработать техническое решение нижнего откидного МДФ-фасада</div><div class="cn">Нужна металлическая основа или крепёж — иначе будет прогибаться</div></div><span class="tag tt">Технологи</span></div>
+<div class="ci"><div class="cb" onclick="chk(this)"></div><div><div class="ct">TIP-ON push-to-open + ограничитель угла открывания</div></div><span class="tag tt">Технологи</span></div>
+</div>
+</div>
+</div>
+</div></div>
+<div class="sec" id="sec-g">
+<div class="sec-title"><span class="dot" style="background:#8B6914"></span>Все фото со встречи — материалы и образцы</div>
+<div class="gallery">
+<div class="gi"><img src="cp615_files/photo_9@17-06-2026_15-29-25_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">✅ Утверждённый образец металла — ВСЯ ПРОЕКТ</div></div>
+<div class="gi"><img src="cp615_files/photo_10@17-06-2026_15-29-38_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Образец металла</div></div>
+<div class="gi"><img src="cp615_files/photo_12@17-06-2026_15-43-38_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Один металл по всему проекту</div></div>
+<div class="gi"><img src="cp615_files/photo_13@17-06-2026_15-43-43_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Металл</div></div>
+<div class="gi"><img src="cp615_files/photo_63@25-06-2026_08-31-53_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Металлический финиш — найти поставщика</div></div>
+<div class="gi"><img src="cp615_files/photo_64@25-06-2026_08-31-53_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Металлический финиш</div></div>
+<div class="gi"><img src="cp615_files/photo_50@25-06-2026_07-59-56_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Акрил — образец нужен</div></div>
+<div class="gi"><img src="cp615_files/photo_69@25-06-2026_08-36-28_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Шпон — весь проект</div></div>
+<div class="gi"><img src="cp615_files/photo_70@25-06-2026_08-36-28_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Шпон (найти 2-ю половину)</div></div>
+<div class="gi"><img src="cp615_files/photo_51@25-06-2026_08-03-01_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Ручка кухня (фасад 22 мм)</div></div>
+<div class="gi"><img src="cp615_files/photo_52@25-06-2026_08-03-02_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Ручка кухня</div></div>
+<div class="gi"><img src="cp615_files/photo_53@25-06-2026_08-03-02_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Ручка кухня</div></div>
+<div class="gi"><img src="cp615_files/photo_54@25-06-2026_08-04-32_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Финиш ручек</div></div>
+<div class="gi"><img src="cp615_files/photo_55@25-06-2026_08-04-33_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Финиш ручек</div></div>
+<div class="gi"><img src="cp615_files/photo_56@25-06-2026_08-10-13_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Профиль для полок кухни</div></div>
+<div class="gi"><img src="cp615_files/photo_57@25-06-2026_08-10-14_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Профиль кухня</div></div>
+<div class="gi"><img src="cp615_files/photo_58@25-06-2026_08-10-54_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Профиль кухня</div></div>
+<div class="gi"><img src="cp615_files/photo_59@25-06-2026_08-13-23_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Рамочный профиль дверей кухни</div></div>
+<div class="gi"><img src="cp615_files/photo_60@25-06-2026_08-20-14_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">TIP-ON откидной фасад</div></div>
+<div class="gi"><img src="cp615_files/photo_61@25-06-2026_08-22-49_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Egger Diamond Grey — внутрянка</div></div>
+<div class="gi"><img src="cp615_files/photo_62@25-06-2026_08-24-35_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Рифлёное бронзовое стекло</div></div>
+<div class="gi"><img src="cp615_files/photo_73@25-06-2026_08-46-25_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Legrabox</div></div>
+<div class="gi"><img src="cp615_files/photo_74@25-06-2026_08-46-53_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Legrabox кухня</div></div>
+<div class="gi"><img src="cp615_files/photo_75@25-06-2026_08-56-39_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Pocket Door кухня</div></div>
+<div class="gi"><img src="cp615_files/photo_76@25-06-2026_08-58-45_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Ткань кровати — цвет утверждён</div></div>
+<div class="gi"><img src="cp615_files/photo_77@25-06-2026_08-58-45_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Ткань кровати</div></div>
+<div class="gi"><img src="cp615_files/photo_86@25-06-2026_10-11-09_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Образцы у заказчика</div></div>
+<div class="gi"><img src="cp615_files/photo_65@25-06-2026_08-33-27_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Детская — цвет металла</div></div>
+<div class="gi"><img src="cp615_files/photo_66@25-06-2026_08-33-27_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Детская</div></div>
+<div class="gi"><img src="cp615_files/photo_16@17-06-2026_15-47-32_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Столик из оргстекла (детская)</div></div>
+<div class="gi"><img src="cp615_files/photo_14@17-06-2026_15-43-56_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Детская спортивная зона</div></div>
+<div class="gi"><img src="cp615_files/photo_15@17-06-2026_15-44-25_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Детская спортивная зона</div></div>
+<div class="gi"><img src="cp615_files/photo_29@23-06-2026_08-50-49_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Лестница — крепление</div></div>
+<div class="gi"><img src="cp615_files/photo_30@23-06-2026_08-52-27_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Лестница конструкция</div></div>
+<div class="gi"><img src="cp615_files/photo_31@23-06-2026_08-52-49_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Лестница конструкция</div></div>
+<div class="gi"><img src="cp615_files/photo_32@23-06-2026_08-53-21_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Детская зона</div></div>
+<div class="gi"><img src="cp615_files/photo_33@23-06-2026_08-53-22_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Детская зона</div></div>
+<div class="gi"><img src="cp615_files/photo_71@25-06-2026_08-38-54_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Колонна — без швов</div></div>
+<div class="gi"><img src="cp615_files/photo_72@25-06-2026_08-41-41_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Колонна</div></div>
+<div class="gi"><img src="cp615_files/photo_22@17-06-2026_16-06-22_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Колонна — без полосок</div></div>
+<div class="gi"><img src="cp615_files/photo_18@17-06-2026_15-57-19_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Системы хранения обуви</div></div>
+<div class="gi"><img src="cp615_files/photo_19@17-06-2026_15-58-10_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Обувные системы</div></div>
+<div class="gi"><img src="cp615_files/photo_20@17-06-2026_15-59-30_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Обувные системы</div></div>
+<div class="gi"><img src="cp615_files/photo_21@17-06-2026_16-04-46_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Кожа для ящиков гардероба</div></div>
+<div class="gi"><img src="cp615_files/photo_49@23-06-2026_15-22-13_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Зеркало в гардероб (пожелание)</div></div>
+<div class="gi"><img src="cp615_files/photo_78@25-06-2026_09-13-14_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Ручка + тонкий профиль</div></div>
+<div class="gi"><img src="cp615_files/photo_79@25-06-2026_09-18-06_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Рейлинг над полками</div></div>
+<div class="gi"><img src="cp615_files/photo_80@25-06-2026_10-01-21_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Рейлинг / металлические полки</div></div>
+<div class="gi"><img src="cp615_files/photo_81@25-06-2026_10-01-21_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Металлические полки</div></div>
+<div class="gi"><img src="cp615_files/photo_82@25-06-2026_10-05-30_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Фурнитура кухни (клиент)</div></div>
+<div class="gi"><img src="cp615_files/photo_83@25-06-2026_10-05-51_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Фурнитура кухни</div></div>
+<div class="gi"><img src="cp615_files/photo_84@25-06-2026_10-08-16_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Legrabox под пеналы</div></div>
+<div class="gi"><img src="cp615_files/photo_85@25-06-2026_10-08-19_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Legrabox</div></div>
+<div class="gi"><img src="cp615_files/photo_67@25-06-2026_08-35-00_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Цвет — где используется? (уточнить)</div></div>
+<div class="gi"><img src="cp615_files/photo_68@25-06-2026_08-35-00_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Цвет</div></div>
+<div class="gi"><img src="cp615_files/photo_27@23-06-2026_08-35-17_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Pocket Door — размеры</div></div>
+<div class="gi"><img src="cp615_files/photo_28@23-06-2026_08-42-54_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Гнутое стекло — ножка стола</div></div>
+<div class="gi"><img src="cp615_files/photo_8@17-06-2026_15-29-05_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Закладные из металла</div></div>
+<div class="gi"><img src="cp615_files/photo_11@17-06-2026_15-42-38_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Монтаж элементов</div></div>
+<div class="gi"><img src="cp615_files/photo_7@17-06-2026_15-19-22_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Мягкая панель — уточнить глубину</div></div>
+<div class="gi"><img src="cp615_files/photo_42@23-06-2026_09-17-26_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Гардероб — обувные полки</div></div>
+<div class="gi"><img src="cp615_files/photo_43@23-06-2026_09-17-27_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Гардероб — обувные полки</div></div>
+<div class="gi"><img src="cp615_files/photo_44@23-06-2026_09-19-36_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Обувные полки вариант</div></div>
+<div class="gi"><img src="cp615_files/photo_45@23-06-2026_09-19-36_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Обувные полки вариант</div></div>
+<div class="gi"><img src="cp615_files/photo_47@23-06-2026_09-26-13_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Крепления гардероба — согласовать</div></div>
+<div class="gi"><img src="cp615_files/photo_4@14-05-2026_11-57-31_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Гардероб 2600×2600 план</div></div>
+<div class="gi"><img src="cp615_files/photo_17@17-06-2026_15-49-45_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Pocket Door высота 2900</div></div>
+<div class="gi"><img src="cp615_files/photo_23@17-06-2026_16-09-57_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Изделие 47/58 — убрать стеклянные фасады</div></div>
+<div class="gi"><img src="cp615_files/photo_24@17-06-2026_16-11-15_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Двери — пожелание заказчика</div></div>
+<div class="gi"><img src="cp615_files/photo_25@17-06-2026_16-11-44_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Зона при входе</div></div>
+<div class="gi"><img src="cp615_files/photo_26@17-06-2026_23-00-36_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">❗ Плитка: в раскладке «Марбл» — это Dragon 9 мм</div></div>
+<div class="gi"><img src="cp615_files/photo_5@14-05-2026_12-06-22_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Колонна — решение от заказчика ожидается</div></div>
+<div class="gi"><img src="cp615_files/photo_1@14-05-2026_11-29-02_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Техника на объекте (май 2026)</div></div>
+<div class="gi"><img src="cp615_files/photo_2@14-05-2026_11-29-59_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Объект (май 2026)</div></div>
+<div class="gi"><img src="cp615_files/photo_3@14-05-2026_11-51-57_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Стена скалолазания (детская)</div></div>
+<div class="gi"><img src="cp615_files/photo_6@17-06-2026_07-56-58_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Поставщик гнутого акрила (Denis)</div></div>
+<div class="gi"><img src="cp615_files/photo_35@23-06-2026_09-06-01_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Чертёж/план</div></div>
+<div class="gi"><img src="cp615_files/photo_36@23-06-2026_09-06-01_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Чертёж/план</div></div>
+<div class="gi"><img src="cp615_files/photo_37@23-06-2026_09-06-01_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Чертёж/план</div></div>
+<div class="gi"><img src="cp615_files/photo_38@23-06-2026_09-06-02_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Чертёж</div></div>
+<div class="gi"><img src="cp615_files/photo_39@23-06-2026_09-06-02_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Чертёж</div></div>
+<div class="gi"><img src="cp615_files/photo_40@23-06-2026_09-06-57_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Чертёж</div></div>
+<div class="gi"><img src="cp615_files/photo_41@23-06-2026_09-06-57_thumb.jpg" onclick="lb(this)" alt=""><div class="gc">Чертёж</div></div>
+</div></div>
+
+<div class="lb" id="lightbox" onclick="closeLb()">
+  <span class="lb-x">✕</span>
+  <img id="lb-img" src="" alt="">
+</div>
+<style>
+.meta-done{font-size:10px;color:#9E9488;margin-top:3px;line-height:1.3;}
+.meta-done span{display:inline-block;background:#f0f0eb;border-radius:3px;padding:1px 5px;margin-right:4px;}
+.cb-wrap{display:flex;flex-direction:column;align-items:flex-start;flex-shrink:0;}
+</style>
+<script>
+// ── Device detection ──────────────────────────────────────
+function getDevice(){
+  const ua=navigator.userAgent;
+  let device='';
+  if(/iPad|Tablet/i.test(ua)) device='Планшет';
+  else if(/Mobi|Android|iPhone/i.test(ua)) device='Телефон';
+  else device='ПК';
+  const os=/Windows/.test(ua)?'Windows':/Mac/.test(ua)?'macOS':/Linux/.test(ua)?'Linux':/Android/.test(ua)?'Android':/iPhone|iPad/.test(ua)?'iOS':'';
+  const br=/Edg/.test(ua)?'Edge':/Chrome/.test(ua)?'Chrome':/Safari/.test(ua)?'Safari':/Firefox/.test(ua)?'Firefox':'';
+  return [device,os,br].filter(Boolean).join(' / ');
+}
+
+// ── Storage key ───────────────────────────────────────────
+const STORE='cp615_tasks';
+
+function loadState(){
+  try{ return JSON.parse(localStorage.getItem(STORE)||'{}'); }
+  catch(e){ return {}; }
+}
+function saveState(state){
+  localStorage.setItem(STORE, JSON.stringify(state));
+}
+
+// ── Unique ID for each check-item ─────────────────────────
+function getTaskId(cbEl){
+  const text = cbEl.closest('.ci')?.querySelector('.ct')?.textContent?.trim();
+  const cardTitle = cbEl.closest('.card')?.querySelector('.ctitle')?.textContent?.trim();
+  return btoa(encodeURIComponent((cardTitle||'')+':::'+(text||''))).slice(0,40);
+}
+
+// ── Render meta line ──────────────────────────────────────
+function renderMeta(cbEl, entry){
+  let meta = cbEl.parentElement.querySelector('.meta-done');
+  if(!meta){
+    meta = document.createElement('div');
+    meta.className='meta-done';
+    cbEl.parentElement.appendChild(meta);
+  }
+  if(entry){
+    meta.innerHTML = '<span>✓ '+entry.date+'</span><span>'+entry.device+'</span>';
+  } else {
+    meta.innerHTML='';
+  }
+}
+
+// ── Apply saved state on load ─────────────────────────────
+function applyState(){
+  const state = loadState();
+  document.querySelectorAll('.cb').forEach(cb=>{
+    const id = getTaskId(cb);
+    if(state[id]){
+      cb.classList.add('done');
+      const t = cb.closest('.ci')?.querySelector('.ct');
+      if(t) t.classList.add('done');
+      renderMeta(cb, state[id]);
+    }
+  });
+}
+
+// ── Toggle handler ────────────────────────────────────────
+function chk(el){
+  const state = loadState();
+  const id = getTaskId(el);
+  const isDone = !el.classList.contains('done');
+  
+  el.classList.toggle('done');
+  const t = el.closest('.ci')?.querySelector('.ct');
+  if(t) t.classList.toggle('done');
+
+  if(isDone){
+    const now = new Date();
+    const date = now.toLocaleDateString('ru-RU',{day:'2-digit',month:'2-digit',year:'numeric'})
+                +' '+now.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+    const entry = { date, device: getDevice() };
+    state[id] = entry;
+    renderMeta(el, entry);
+  } else {
+    delete state[id];
+    renderMeta(el, null);
+  }
+  saveState(state);
+}
+
+// ── Other functions ───────────────────────────────────────
+function showTab(id,el){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('sec-'+id).classList.add('active');
+  el.classList.add('active');
+}
+function tog(hdr){hdr.parentElement.classList.toggle('open');}
+function lb(img){
+  document.getElementById('lb-img').src=img.src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLb(){document.getElementById('lightbox').classList.remove('open');}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeLb();});
+
+// ── Init ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', applyState);
+</script>
+</body></html>
